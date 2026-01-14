@@ -46,8 +46,9 @@ exec go run bytetrack.go \
   -m ../data/models/rk3566/yolov8n-pose-rk3566.rknn \
   -t v8pose \
   -l ../data/yolov8_pose_labels_list.txt \
-  -c "640x480@10" \
+  -c "320x240@5" \
   -codec nv12 \
   -p rk3566 \
+  -s 1 \
   -x person \
   -a :8081
