@@ -2,7 +2,11 @@
 
 # YOLOv8 Pose 流媒体服务 - 快速启动脚本
 
+# 默认摄像头设备，可通过第一个参数修改
+CAMERA_DEVICE=${1:-11}
+
 echo "=== 启动 YOLOv8 Pose 摄像头流媒体服务 ==="
+echo "使用摄像头: /dev/video${CAMERA_DEVICE}"
 
 # 设置所有必要的环境变量
 export PATH=/opt/app/go/bin:$PATH
@@ -13,14 +17,15 @@ export LD_LIBRARY_PATH="/home/ubuntu/opencv-install/lib:$LD_LIBRARY_PATH"
 
 echo "✓ 环境变量已设置"
 
-# 检查摄像头
-echo "正在检查摄像头..."
-for i in 0 1 2; do
-    if [ -e "/dev/video$i" ]; then
-        echo "✓ 发现摄像头: /dev/video$i"
-        break
-    fi
-done
+# 检查指定的摄像头
+if [ ! -e "/dev/video${CAMERA_DEVICE}" ]; then
+    echo "❌ 错误: 摄像头 /dev/video${CAMERA_DEVICE} 不存在"
+    echo "可用的摄像头设备:"
+    ls -la /dev/video* 2>/dev/null || echo "未找到任何摄像头设备"
+    exit 1
+fi
+
+echo "✓ 摄像头设备已确认: /dev/video${CAMERA_DEVICE}"
 
 # 进入项目目录
 cd ~/go-rknnlite/example/stream
@@ -37,6 +42,7 @@ echo ""
 
 # 启动服务
 exec go run bytetrack.go \
+  -v ${CAMERA_DEVICE} \
   -m ../data/models/rk3566/yolov8n-pose-rk3566.rknn \
   -t v8pose \
   -l ../data/yolov8_pose_labels_list.txt \
