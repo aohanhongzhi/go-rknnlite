@@ -47,7 +47,7 @@ exec go run bytetrack.go \
   -t v8pose \
   -l ../data/yolov8_pose_labels_list.txt \
   -c "640x480@10" \
-  -codec yuyv \
+  -codec nv12 \
   -p rk3566 \
   -x person \
   -a :8081
